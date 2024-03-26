@@ -1,0 +1,27 @@
+{
+  "name": "ecommerce-backend-architecture",
+  "version": "1.0.0",
+  "description": "Ecommerce backend",
+  "main": "server.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "nodejs",
+    "express js"
+  ],
+  "author": "Lexe",
+  "license": "ISC",
+  "dependencies": {
+    "compression": "^1.7.4",
+    "express": "^4.19.2",
+    "helmet": "^7.1.0"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.0"
+  }
+}
