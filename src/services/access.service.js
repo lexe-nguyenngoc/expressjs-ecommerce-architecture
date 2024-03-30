@@ -5,13 +5,7 @@ const shopModel = require("../models/shop.model");
 const KeyTokenService = require("./keyToken.service");
 const { createTokenPair } = require("../utils/auth.util");
 const { pickFields } = require("../utils");
-
-const RoleShop = {
-  SHOP: "0000",
-  WRITER: "0001",
-  EDITOR: "0002",
-  ADMIN: "0003",
-};
+const { RoleShop } = require("../constants");
 
 class AccessService {
   static signup = async ({ name, email, password }) => {
