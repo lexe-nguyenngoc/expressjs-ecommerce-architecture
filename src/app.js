@@ -10,18 +10,15 @@ const app = express();
 app.use(morgan("dev"));
 app.use(helmet());
 app.use(compression());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Init db
 require("./dbs/init.mongodb");
 
 // Init router
-app.get("/", (req, res) => {
-  const strCompress = "Hello my friend!!!";
-  res.status(200).json({
-    message: "Hello world!",
-    metadata: strCompress.repeat(100000),
-  });
-});
+
+app.use("/", require("./routes"));
 
 // Handling error
 
