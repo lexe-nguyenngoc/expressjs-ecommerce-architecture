@@ -1,5 +1,9 @@
 const mongoose = require("mongoose");
-const { countConnections, checkOverload } = require("../helpers/check.connect");
+const {
+  db: { host, name, port },
+} = require("../configs/config.mongodb");
+
+const connectionString = `mongodb://${host}:${port}/${name}`;
 
 class Database {
   static instance;
@@ -14,13 +18,10 @@ class Database {
       mongoose.set("debug", { color: true });
     }
 
-    const connectionString = "mongodb://localhost:27017/shopDEV";
     mongoose
       .connect(connectionString, { maxPoolSize: 50 })
       .then(() => {
         console.log("Connected to MongoDB successfully");
-        countConnections();
-        checkOverload();
       })
       .catch((error) => {
         console.log("Failed to connect to MongoDB with error: ", error);
