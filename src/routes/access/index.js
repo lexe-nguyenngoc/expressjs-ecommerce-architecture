@@ -5,6 +5,6 @@ const asyncHandler = require("../../middlewares/asyncHandler.middleware");
 
 const router = express.Router();
 
-// signup
+router.post("/shop/login", asyncHandler(accessController.login));
 router.post("/shop/signup", asyncHandler(accessController.signup));
 module.exports = router;

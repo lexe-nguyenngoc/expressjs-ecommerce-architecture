@@ -1,5 +1,5 @@
-const { StatusCodes, ReasonPhrases } = require("./httpStatusCode");
-const reasonPhrases = require("./reasonPhrases");
+const { StatusCodes, ReasonPhrases } = require("../utils/httpStatusCode");
+const reasonPhrases = require("../utils/reasonPhrases");
 
 class SuccessResponse {
   constructor({
@@ -37,4 +37,4 @@ class CREATED extends SuccessResponse {
   }
 }
 
-module.exports = { OK, CREATED };
+module.exports = { OK, CREATED, SuccessResponse };
