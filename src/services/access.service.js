@@ -56,14 +56,11 @@ class AccessService {
     );
 
     return {
-      code: 201,
-      metadata: {
-        shop: pickFields({
-          fields: ["_id", "email", "name"],
-          object: newShop,
-        }),
-        tokens,
-      },
+      data: pickFields({
+        fields: ["_id", "email", "name"],
+        object: newShop,
+      }),
+      tokens,
     };
   };
 }
