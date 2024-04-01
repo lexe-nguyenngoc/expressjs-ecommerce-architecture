@@ -1,7 +1,14 @@
+const JWT = require("jsonwebtoken");
+
+const { AuthFailureError, NotFoundError } = require("../core/error.response");
+const asyncHandler = require("../helpers/asyncHandler");
 const { findById } = require("../services/apiKey.service");
+const KeyTokenService = require("../services/keyToken.service");
+const { verifyToken } = require("../utils/auth.util");
 
 const HEADER = {
   API_KEY: "x-api-key",
+  CLIENT_ID: "x-client-id",
   AUTHORIZATION: "authorization",
 };
 
@@ -50,4 +57,36 @@ const permission = (permission) => {
   };
 };
 
-module.exports = { apiKey, permission };
+const authentication = asyncHandler(async (req, res, next) => {
+  /*
+  1- Check userId missing ?
+  2- Get accessToken
+  3- Verify token
+  4- Check user in dbs
+  5- Check keyStore with this userId
+  6- Ok => return next
+  */
+
+  const userId = req.headers[HEADER.CLIENT_ID];
+  if (!userId) throw new AuthFailureError("Invalid Request");
+
+  const keyStore = await KeyTokenService.findByUserId(userId);
+  if (!keyStore) throw new NotFoundError("Not found keyStore");
+
+  const accessToken = req.headers[HEADER.AUTHORIZATION];
+
+  if (!accessToken?.startsWith("Bearer"))
+    throw new AuthFailureError("Invalid Request");
+
+  const decodeUser = await JWT.verify(
+    accessToken.replace("Bearer ", ""),
+    keyStore.publicKey
+  );
+  if (userId !== decodeUser.userId)
+    throw new AuthFailureError("Invalid UserId");
+
+  req.keyStore = keyStore;
+  return next();
+});
+
+module.exports = { apiKey, permission, authentication };

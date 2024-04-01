@@ -12,6 +12,14 @@ const { pickFields } = require("../utils");
 const { generateKeyPair } = require("../utils/generateKeyPair.util");
 
 class AccessService {
+  static logout = async (keyStore) => {
+    console.log({ keyStore });
+    const delKey = await KeyTokenService.removeKeyById(keyStore._id);
+    console.log({ delKey });
+
+    return delKey;
+  };
+
   static login = async ({ email, password, refreshToken }) => {
     const foundShop = await findByEmail(email);
     if (!foundShop) throw new BadRequestError("Shop does not registered");

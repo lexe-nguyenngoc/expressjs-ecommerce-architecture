@@ -1,6 +1,13 @@
 @url_dev=http://localhost:3055/v1/api
 
-### signup
+### logout
+GET  {{url_dev}}/shop/logout
+Content-Type: application/json
+x-api-key: 2b8070c503ebfc2a030908a5d793c68c4dd59d33b20fe1d5ce0c82c84e54f86bad534069981697e7693aa0453081a519b3d32a00e34ca2a61deca7e4475c2aa4
+x-client-id: 6608fd3e14fb41350c0b1fab
+Authorization: Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiI2NjA4ZmQzZTE0ZmI0MTM1MGMwYjFmYWIiLCJlbWFpbCI6InNob3B0ZXN0MDAwMEBnbWFpbC5jb20iLCJpYXQiOjE3MTE5ODc1ODksImV4cCI6MTcxMjE2MDM4OX0.j3LPSxe7hTUfo1qQabFisuu95gIcVKQFfQkVXbibnMy14Vbys383pojM4GcIjmhZLzJ3yvIkGzNmqRdmbwH4c5rnvmGPCtpuxP7yrBNrv25nP-xu85KapwSlqfqQzKK-FDNzGXlP6_EWcBAXVzeW_ockJxwWN3okqF7gCH5BmsC0AwZuE1Zfyem8PwtQBZi8MyAZnXyKk8zdPTI9kpe1i_nAGjQXZ8aS7KeeHm-Vzcw0EkeoeomvTCTiCyRWy94X-MziFYN9GE90OYyWQE483Bnqx_ucZh-vItaeG72_u81TuXI1_tyB5Z27udgQEugrzrdEr8JUqWROi-TU8-X_kSvUXg_206Im-NGYNPpyrpZyteXE0FZ95EdbORTn8S2WVufGEEuD079_DlTAVKPwBSVhHn85cN1K3LusrlCRq9NgNhkFtDccRwWaAzmaZW-Hs5K6bTg78p32hBWrJwyJnkKq13u0qxk1v-mmWy-87d4MrR5KRj0ey4oQCTiVq2-6AqcX6zBjB2uZcsK7b5Y6QK8ALd2uys2EN02D5102i5yUxciFm6a7yHYsAtfgHnKELe7dx_bqoCDIFnqTJ6yv_biQNwDRZB2yf7mEBZbV-SHv-aaelGQK8rPKLRO60q3sjiEogltQVEO8N9Ab772IT9RbxV2denVaxwtLUa1vns4
+
+### login
 POST {{url_dev}}/shop/login
 Content-Type: application/json
 x-api-key: 2b8070c503ebfc2a030908a5d793c68c4dd59d33b20fe1d5ce0c82c84e54f86bad534069981697e7693aa0453081a519b3d32a00e34ca2a61deca7e4475c2aa4
@@ -21,3 +28,4 @@ x-api-key: 2b8070c503ebfc2a030908a5d793c68c4dd59d33b20fe1d5ce0c82c84e54f86bad534
     "email": "shoptest0000@gmail.com",
     "password": "test1234@"
 }
+
