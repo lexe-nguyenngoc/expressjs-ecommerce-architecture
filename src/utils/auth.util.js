@@ -1,6 +1,6 @@
 const JWT = require("jsonwebtoken");
 
-const createTokenPair = async (payload, publicKey, privateKey) => {
+const createTokenPair = async (payload, privateKey) => {
   try {
     const accessToken = await JWT.sign(payload, privateKey, {
       algorithm: "RS256",
@@ -19,6 +19,11 @@ const createTokenPair = async (payload, publicKey, privateKey) => {
   } catch (error) {}
 };
 
+const verifyJWT = async (token, secret) => {
+  return await JWT.verify(token, secret);
+};
+
 module.exports = {
   createTokenPair,
+  verifyJWT,
 };

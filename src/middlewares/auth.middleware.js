@@ -77,11 +77,11 @@ const authentication = asyncHandler(async (req, res, next) => {
 
   if (!accessToken?.startsWith("Bearer"))
     throw new AuthFailureError("Invalid Request");
-
   const decodeUser = await JWT.verify(
     accessToken.replace("Bearer ", ""),
     keyStore.publicKey
   );
+
   if (userId !== decodeUser.userId)
     throw new AuthFailureError("Invalid UserId");
 

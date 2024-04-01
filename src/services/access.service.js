@@ -4,14 +4,53 @@ const shopModel = require("../models/shop.model");
 const KeyTokenService = require("./keyToken.service");
 const { findByEmail } = require("./shop.service");
 
-const { BadRequestError, AuthFailureError } = require("../core/error.response");
+const {
+  BadRequestError,
+  AuthFailureError,
+  ForbiddenError,
+} = require("../core/error.response");
 const { RoleShop } = require("../constants");
 
-const { createTokenPair } = require("../utils/auth.util");
+const { createTokenPair, verifyJWT } = require("../utils/auth.util");
 const { pickFields } = require("../utils");
 const { generateKeyPair } = require("../utils/generateKeyPair.util");
 
 class AccessService {
+  static refreshTokenHandler = async (refreshToken) => {
+    const foundToken = await KeyTokenService.findByRefreshTokensUsed(
+      refreshToken
+    );
+    if (foundToken) {
+      const { userId } = await verifyJWT(refreshToken, foundToken.publicKey);
+
+      await KeyTokenService.deleteKeyByUserId(userId);
+      throw new ForbiddenError("Something went wrong! Please re-login");
+    }
+
+    const holderToken = await KeyTokenService.findByRefreshToken(refreshToken);
+    if (!holderToken) throw new AuthFailureError("Shop not registered");
+
+    const { userId, email } = await verifyJWT(
+      refreshToken,
+      holderToken.publicKey
+    );
+    const foundShop = await findByEmail(email);
+    if (!foundShop) throw new AuthFailureError("Shop not registered");
+
+    const { privateKey, publicKey } = generateKeyPair();
+    const tokens = await createTokenPair({ userId, email }, privateKey);
+
+    holderToken.refreshToken = tokens.refreshToken;
+    holderToken.publicKey = publicKey;
+    holderToken.refreshTokensUsed.addToSet(refreshToken);
+    await holderToken.save();
+
+    return {
+      user: { userId, email },
+      tokens,
+    };
+  };
+
   static logout = async (keyStore) => {
     console.log({ keyStore });
     const delKey = await KeyTokenService.removeKeyById(keyStore._id);
@@ -29,11 +68,7 @@ class AccessService {
 
     const { privateKey, publicKey } = generateKeyPair();
     const { _id: userId } = foundShop;
-    const tokens = await createTokenPair(
-      { userId, email },
-      publicKey,
-      privateKey
-    );
+    const tokens = await createTokenPair({ userId, email }, privateKey);
 
     await KeyTokenService.createToken({
       userId,
@@ -72,11 +107,7 @@ class AccessService {
 
     const { privateKey, publicKey } = generateKeyPair();
     const { _id: userId } = newShop;
-    const tokens = await createTokenPair(
-      { userId, email },
-      publicKey,
-      privateKey
-    );
+    const tokens = await createTokenPair({ userId, email }, privateKey);
 
     // Save publicKey to db
     const publicKeyString = await KeyTokenService.createToken({
