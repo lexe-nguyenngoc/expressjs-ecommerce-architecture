@@ -84,7 +84,7 @@ class AccessService {
 
   static signup = async ({ name, email, password }) => {
     // Check email exists?
-    const holderShop = await findByEmail({ email }).lean();
+    const holderShop = await findByEmail(email);
     if (holderShop) {
       throw new BadRequestError("Error: Shop already registered!");
     }
