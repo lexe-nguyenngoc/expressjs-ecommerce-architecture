@@ -10,6 +10,7 @@ const HEADER = {
   API_KEY: "x-api-key",
   CLIENT_ID: "x-client-id",
   AUTHORIZATION: "authorization",
+  REFRESH_TOKEN: "x-refresh-token",
 };
 
 const apiKey = async (req, res, next) => {
@@ -73,8 +74,21 @@ const authentication = asyncHandler(async (req, res, next) => {
   const keyStore = await KeyTokenService.findByUserId(userId);
   if (!keyStore) throw new NotFoundError("Not found keyStore");
 
-  const accessToken = req.headers[HEADER.AUTHORIZATION];
+  const refreshToken = req.headers[HEADER.REFRESH_TOKEN];
+  if (refreshToken) {
+    const decodeUser = await JWT.verify(refreshToken, keyStore.publicKey);
 
+    if (userId !== decodeUser.userId)
+      throw new AuthFailureError("Invalid UserId");
+
+    req.keyStore = keyStore;
+    req.user = decodeUser;
+    req.refreshToken = refreshToken;
+
+    return next();
+  }
+
+  const accessToken = req.headers[HEADER.AUTHORIZATION];
   if (!accessToken?.startsWith("Bearer"))
     throw new AuthFailureError("Invalid Request");
   const decodeUser = await JWT.verify(

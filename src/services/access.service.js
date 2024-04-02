@@ -16,37 +16,32 @@ const { pickFields } = require("../utils");
 const { generateKeyPair } = require("../utils/generateKeyPair.util");
 
 class AccessService {
-  static refreshTokenHandler = async (refreshToken) => {
-    const foundToken = await KeyTokenService.findByRefreshTokensUsed(
-      refreshToken
-    );
-    if (foundToken) {
-      const { userId } = await verifyJWT(refreshToken, foundToken.publicKey);
+  static refreshTokenHandler = async ({ refreshToken, user, keyStore }) => {
+    const { userId, email } = user;
 
+    console.log("=>>", { user, refreshToken, keyStore });
+
+    if (keyStore.refreshTokensUsed.includes(refreshToken)) {
       await KeyTokenService.deleteKeyByUserId(userId);
       throw new ForbiddenError("Something went wrong! Please re-login");
     }
 
-    const holderToken = await KeyTokenService.findByRefreshToken(refreshToken);
-    if (!holderToken) throw new AuthFailureError("Shop not registered");
+    if (keyStore.refreshToken !== refreshToken)
+      throw new AuthFailureError("Shop not registered");
 
-    const { userId, email } = await verifyJWT(
-      refreshToken,
-      holderToken.publicKey
-    );
     const foundShop = await findByEmail(email);
     if (!foundShop) throw new AuthFailureError("Shop not registered");
 
     const { privateKey, publicKey } = generateKeyPair();
     const tokens = await createTokenPair({ userId, email }, privateKey);
 
-    holderToken.refreshToken = tokens.refreshToken;
-    holderToken.publicKey = publicKey;
-    holderToken.refreshTokensUsed.addToSet(refreshToken);
-    await holderToken.save();
+    keyStore.refreshToken = tokens.refreshToken;
+    keyStore.publicKey = publicKey;
+    keyStore.refreshTokensUsed.addToSet(refreshToken);
+    await keyStore.save();
 
     return {
-      user: { userId, email },
+      user,
       tokens,
     };
   };

@@ -12,8 +12,8 @@ router.post("/shop/signup", asyncHandler(accessController.signup));
 // authentication
 router.use(authentication);
 
-router.get("/shop/logout", asyncHandler(accessController.logout));
-router.post(
+router.delete("/shop/logout", asyncHandler(accessController.logout));
+router.patch(
   "/shop/refreshToken",
   asyncHandler(accessController.refreshTokenHandler)
 );
