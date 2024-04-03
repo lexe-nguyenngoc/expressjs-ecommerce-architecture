@@ -30,6 +30,7 @@ const clothingSchema = new Schema(
     brand: { type: String, required: true },
     size: String,
     material: String,
+    product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
   },
   {
     collection: "Clothes",
@@ -43,9 +44,24 @@ const electronicSchema = new Schema(
     manufacturer: { type: String, required: true },
     model: String,
     color: String,
+    product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
   },
   {
     collection: "Electronics",
+    timestamps: true,
+  }
+);
+
+// Define the product type = furniture
+const furnitureSchema = new Schema(
+  {
+    brand: { type: String, required: true },
+    size: String,
+    material: String,
+    product_shop: { type: Schema.Types.ObjectId, ref: "Shop" },
+  },
+  {
+    collection: "Furniture",
     timestamps: true,
   }
 );
@@ -54,4 +70,5 @@ module.exports = {
   product: model(DOCUMENT_NAME, productSchema),
   clothing: model("Clothing", clothingSchema),
   electronic: model("Electronics", electronicSchema),
+  furniture: model("Furniture", furnitureSchema),
 };
