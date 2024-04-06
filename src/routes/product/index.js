@@ -11,6 +11,9 @@ router.get(
   asyncHandler(productController.getListSearchProduct)
 );
 
+router.get("", asyncHandler(productController.findAllProducts));
+router.get("/:id", asyncHandler(productController.findProduct));
+
 router.use(authentication);
 
 router.post("", asyncHandler(productController.createProduct));
