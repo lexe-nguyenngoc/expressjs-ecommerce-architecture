@@ -4,4 +4,9 @@ const RoleShop = {
   EDITOR: "0002",
   ADMIN: "0003",
 };
-module.exports = { RoleShop };
+
+const NODE_ENVS = {
+  DEV: "dev",
+  PROD: "prod",
+};
+module.exports = { RoleShop, NODE_ENVS };

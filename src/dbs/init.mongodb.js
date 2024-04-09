@@ -1,7 +1,9 @@
 const mongoose = require("mongoose");
 const {
   db: { host, name, port },
-} = require("../configs/config.mongodb");
+  NODE_ENV,
+} = require("../configs");
+const { NODE_ENVS } = require("../constants");
 
 const connectionString = `mongodb://${host}:${port}/${name}`;
 
@@ -13,8 +15,7 @@ class Database {
   }
 
   async connect(type = "mongodb") {
-    if (true) {
-      mongoose.set("debug", true);
+    if (NODE_ENV === NODE_ENVS.DEV) {
       mongoose.set("debug", { color: true });
     }
 
