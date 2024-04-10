@@ -1,4 +1,10 @@
 import mongodb from "./mongodb.config";
 
-const configs = { mongodb };
-export default configs;
+const MODE = {
+  DEV: "dev",
+  PROD: "rod",
+};
+
+const isDEV = process.env.NODE_ENV === MODE.DEV;
+
+export default { mongodb, isDEV, MODE };
