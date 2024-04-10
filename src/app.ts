@@ -22,6 +22,6 @@ app.use(express.urlencoded());
 connectDatabase();
 
 // Router
-app.use(router);
+app.use("/api", router);
 
 export default app;
