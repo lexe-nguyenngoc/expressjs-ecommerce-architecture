@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import apiKeyService from "../services/apiKey.service";
+import apiKeyService from "@/services/apiKey.service";
 
 class ApiKeyController {
   createApiKey = async (req: Request, res: Response) => {

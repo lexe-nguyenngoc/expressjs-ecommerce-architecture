@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { Headers, StatusCode } from "../constants";
-import apiKeyService from "../services/apiKey.service";
+import { Headers, StatusCode } from "@/constants";
+import apiKeyService from "@/services/apiKey.service";
 
 export const apiKey = async (
   req: Request,

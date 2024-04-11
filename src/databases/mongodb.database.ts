@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import configs from "../configs";
+import configs from "@/configs";
 
 const { mongodb, isDEV } = configs;
 

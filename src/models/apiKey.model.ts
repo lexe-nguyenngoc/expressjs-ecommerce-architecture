@@ -1,5 +1,5 @@
 import { Schema, model } from "mongoose";
-import { ApiKeyPermission } from "../constants";
+import { ApiKeyPermission } from "@/constants";
 
 interface ApiKey {
   key: string;

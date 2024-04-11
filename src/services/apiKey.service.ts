@@ -1,5 +1,5 @@
-import { ApiKeyPermission } from "../constants";
-import ApiKeyModel from "../models/apiKey.model";
+import { ApiKeyPermission } from "@/constants";
+import ApiKeyModel from "@/models/apiKey.model";
 
 class ApiKeyService {
   createApiKey = async (

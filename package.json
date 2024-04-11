@@ -5,7 +5,7 @@
   "main": "server.ts",
   "scripts": {
     "test": "start",
-    "start": "ts-node-dev --respawn --transpile-only --clear server.ts"
+    "start": "ts-node-dev --respawn --transpile-only --clear --require tsconfig-paths/register server.ts"
   },
   "keywords": [
     "expressjs",
@@ -32,6 +32,12 @@
     "morgan": "^1.10.0",
     "ts-node": "^10.9.2",
     "ts-node-dev": "^2.0.0",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.4.5"
+  },
+  "ts-node": {
+    "require": [
+      "tsconfig-paths/register"
+    ]
   }
 }

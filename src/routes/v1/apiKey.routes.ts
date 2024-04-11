@@ -1,5 +1,5 @@
 import express from "express";
-import apiKeyController from "../../controllers/apiKey.controller";
+import apiKeyController from "@/controllers/apiKey.controller";
 
 const apiKeyRouter = express.Router();
 
