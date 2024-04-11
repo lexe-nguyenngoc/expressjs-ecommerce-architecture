@@ -9,7 +9,6 @@ import {
   pickFields,
   signTokenPair,
 } from "@/utils";
-import { AuthenticationRequest } from "@/utils/types";
 
 interface SignUpRequestBody {
   name: string;
@@ -67,11 +66,7 @@ class AuthController {
     ).send(res);
   };
 
-  logout = async (
-    req: AuthenticationRequest,
-    res: Response,
-    next: NextFunction
-  ) => {
+  logout = async (req: Request, res: Response, next: NextFunction) => {
     const keyTokenUpdated = await keyTokenService.disableKeyTokenById(
       req.keyToken._id
     );
