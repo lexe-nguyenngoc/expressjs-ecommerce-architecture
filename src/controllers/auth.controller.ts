@@ -1,3 +1,4 @@
+import { OK } from "@/core/success.response";
 import keyTokenService from "@/services/keyToken.service";
 import shopService from "@/services/shop.service";
 import { generateRSAKeyPair, pickFields, signTokenPair } from "@/utils";
@@ -21,10 +22,13 @@ class AuthController {
 
     await keyTokenService.createKeyToken(newShop.id, publicKey, refreshToken);
 
-    return res.status(200).json({
-      data: pickFields(newShop, ["id", "email", "name"]),
-      tokens: { accessToken, refreshToken },
-    });
+    return new OK(
+      {
+        data: pickFields(newShop, ["id", "email", "name"]),
+        tokens: { accessToken, refreshToken },
+      },
+      "Signup success"
+    ).send(res);
   };
 }
 

@@ -6,7 +6,7 @@ export const signToken = (
   expiresIn: string = "2 days"
 ): string => {
   const token = JWT.sign(payload, secret, {
-    // algorithm: "RS256",
+    algorithm: "RS256",
     expiresIn,
   });
 
