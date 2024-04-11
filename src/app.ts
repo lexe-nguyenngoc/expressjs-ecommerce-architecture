@@ -1,13 +1,13 @@
-import "dotenv/config";
 import compression from "compression";
+import "dotenv/config";
 import express, { Application } from "express";
 import helmet from "helmet";
 import morgan from "morgan";
 
-import router from "@/routes";
-import { connectDatabase } from "@/databases";
-
 import configs from "@/configs";
+import { connectDatabase } from "@/databases";
+import { errorHandler } from "@/middlewares";
+import router from "@/routes";
 
 const app: Application = express();
 
@@ -23,5 +23,8 @@ connectDatabase();
 
 // Router
 app.use("/api", router);
+
+// Error Handler
+app.use(errorHandler);
 
 export default app;

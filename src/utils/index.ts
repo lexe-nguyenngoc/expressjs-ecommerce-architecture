@@ -2,6 +2,7 @@ import _ from "lodash";
 
 export * from "./generateKeyPair";
 export * from "./token";
+export * from "./asyncHandler";
 
 export const pickFields = <T extends Record<string, any>, K extends keyof T>(
   object: T,
