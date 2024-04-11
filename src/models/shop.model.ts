@@ -45,12 +45,5 @@ shopSchema.pre("save", async function (next) {
   next();
 });
 
-shopSchema.methods.comparePassword = function comparePassword(
-  candidatePassword: string
-): boolean {
-  console.log(candidatePassword, this.password);
-  return bcrypt.compareSync(candidatePassword, this.password);
-};
-
 const ShopModel = model<Shop>(DOCUMENT_NAME, shopSchema);
 export default ShopModel;

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 
 import { Headers } from "@/constants";
 import { ForbiddenError, UnauthorizedError } from "@/core/error.response";
-import { asyncHandler, verifyToken } from "@/utils";
+import { TokenPayload, asyncHandler, verifyToken } from "@/utils";
 
 import apiKeyService from "@/services/apiKey.service";
 import keyTokenService from "@/services/keyToken.service";
@@ -27,43 +27,51 @@ export const apiKey = asyncHandler(
 
 export const authentication = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
-    /**
-     * 1 - Check userId, accessToken headers
-     * 2 - Find key token by userId to get publicKey to decode the access token
-     * 3 - Verify access token
-     * 4 - Check user Id has equal id in decoded token and find it to check if it exists in database.
-     * 5 - Attach the keyToken and valid user to req for later reuse.
-     */
     const userId = req.headers[Headers.CLIENT_ID];
-    const accessToken = req.headers[Headers.AUTHORIZATION];
-    if (
-      !userId ||
-      typeof userId !== "string" ||
-      !accessToken ||
-      !accessToken.startsWith("Bearer ")
-    )
-      throw new UnauthorizedError("Error: Invalid Request");
+    if (!userId || typeof userId !== "string")
+      throw new UnauthorizedError("Error: Forbidden Request!");
 
     const keyToken = await keyTokenService.findKeyTokenByUserId(userId);
     if (!keyToken || !keyToken.publicKey || !keyToken.refreshToken)
-      throw new UnauthorizedError("Error: You are not logged in!");
+      throw new UnauthorizedError("Error: Forbidden Request!");
 
-    const decodedToken = verifyToken(
-      accessToken.replace("Bearer ", ""),
-      keyToken.publicKey
-    );
+    const refreshToken = req.headers[Headers.REFRESH_TOKEN];
+    const accessToken = req.headers[Headers.AUTHORIZATION];
 
-    if (userId !== decodedToken.id)
+    if (
+      refreshToken &&
+      typeof refreshToken === "string" &&
+      keyToken.refreshToken !== refreshToken &&
+      keyToken.refreshTokensUsed.includes(refreshToken)
+    )
+      throw new UnauthorizedError("Error: Forbidden Request!");
+
+    const token = refreshToken ?? accessToken;
+
+    if (!token || typeof token !== "string" || !token.startsWith("Bearer "))
+      throw new UnauthorizedError("Error: Forbidden Request!");
+    let decodedPayload: TokenPayload;
+    try {
+      decodedPayload = verifyToken(
+        token.replace("Bearer ", ""),
+        keyToken.publicKey
+      );
+    } catch (error) {
+      throw new UnauthorizedError("Error: Forbidden Request!");
+    }
+
+    if (userId !== decodedPayload.id)
       throw new UnauthorizedError("Error: The token is invalid");
 
     const user = await shopService.findShopByEmailId(
-      decodedToken.email,
-      decodedToken.id
+      decodedPayload.email,
+      decodedPayload.id
     );
-
     if (!user) throw new UnauthorizedError("Error: The token is invalid");
+
     req.keyToken = keyToken;
     req.user = user;
+
     next();
   }
 );

@@ -1,3 +1,5 @@
+import bcrypt from "bcrypt";
+
 import {
   BadRequestError,
   NotFoundError,
@@ -31,7 +33,7 @@ class ShopService {
         `Error: Could not find any users with email: ${email}`
       );
 
-    if (!existingShop.comparePassword(password))
+    if (!bcrypt.compareSync(password, existingShop.password))
       throw new UnauthorizedError("Error: Email or password is incorrect");
 
     return existingShop;

@@ -34,7 +34,7 @@ class AuthController {
 
     return new OK(
       {
-        data: pickFields(newShop, ["id", "email", "name"]),
+        data: pickFields(newShop, ["_id", "email", "name"]),
         tokens,
       },
       "Signup success"
@@ -53,13 +53,13 @@ class AuthController {
     );
 
     const tokens = await this.generateToken(
-      existingShop.id,
+      existingShop._id,
       existingShop.email
     );
 
     return new OK(
       {
-        data: pickFields(existingShop, ["id", "email", "name"]),
+        data: pickFields(existingShop, ["_id", "email", "name"]),
         tokens,
       },
       "Login success"
@@ -72,6 +72,18 @@ class AuthController {
     );
 
     return new OK({ data: keyTokenUpdated }, "Logout success").send(res);
+  };
+
+  refreshToken = async (req: Request, res: Response, next: NextFunction) => {
+    const tokens = await this.generateToken(req.user._id, req.user.email);
+
+    return new OK(
+      {
+        data: pickFields(req.user, ["_id", "email", "name"]),
+        tokens,
+      },
+      "Refresh token success"
+    ).send(res);
   };
 
   private generateToken = async (id: string, email: string) => {
