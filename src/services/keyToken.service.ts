@@ -1,4 +1,6 @@
+import { BadRequestError } from "@/core/error.response";
 import KeyTokenModel from "@/models/keyToken.model";
+import { createPrivateKey } from "crypto";
 import { Types } from "mongoose";
 
 class KeyTokenService {
@@ -25,8 +27,20 @@ class KeyTokenService {
     return newKeyToken;
   };
 
+  disableKeyTokenById = async (keyTokenId: string) => {
+    const keyTokenFound = await KeyTokenModel.findById(keyTokenId);
+    if (!keyTokenFound) throw new BadRequestError("Error: Token is invalid!");
+
+    keyTokenFound.refreshTokensUsed.push(keyTokenFound.refreshToken);
+    keyTokenFound.publicKey = "";
+    keyTokenFound.refreshToken = "";
+    await keyTokenFound.save();
+
+    return createPrivateKey;
+  };
+
   findKeyTokenByUserId = async (userId: string) => {
-    return await KeyTokenModel.findOne({ user: userId });
+    return await KeyTokenModel.findOne({ user: userId }).lean();
   };
 }
 

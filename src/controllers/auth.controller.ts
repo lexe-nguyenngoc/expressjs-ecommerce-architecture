@@ -9,6 +9,7 @@ import {
   pickFields,
   signTokenPair,
 } from "@/utils";
+import { AuthenticationRequest } from "@/utils/types";
 
 interface SignUpRequestBody {
   name: string;
@@ -67,11 +68,15 @@ class AuthController {
   };
 
   logout = async (
-    req: Request<{}, {}, SignUpRequestBody>,
+    req: AuthenticationRequest,
     res: Response,
     next: NextFunction
   ) => {
-    res.send("Logout success");
+    const keyTokenUpdated = await keyTokenService.disableKeyTokenById(
+      req.keyToken._id
+    );
+
+    return new OK({ data: keyTokenUpdated }, "Logout success").send(res);
   };
 
   private generateToken = async (id: string, email: string) => {

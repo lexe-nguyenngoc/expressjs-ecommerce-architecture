@@ -1,48 +1,37 @@
 import { NextFunction, Request, Response } from "express";
 
 import { Headers } from "@/constants";
-import {
-  ForbiddenError,
-  NotFoundError,
-  UnauthorizedError,
-} from "@/core/error.response";
+import { ForbiddenError, UnauthorizedError } from "@/core/error.response";
 import { asyncHandler, verifyToken } from "@/utils";
+import { ApiKeyRequest, AuthenticationRequest } from "@/utils/types";
 
-import { ApiKey } from "@/models/apiKey.model";
-import { KeyToken } from "@/models/keyToken.model";
-
-import { Shop } from "@/models/shop.model";
 import apiKeyService from "@/services/apiKey.service";
 import keyTokenService from "@/services/keyToken.service";
 import shopService from "@/services/shop.service";
 
-interface CustomRequest extends Request {
-  apiKey?: ApiKey;
-  keyToken?: KeyToken;
-  user?: Shop;
-}
+export const apiKey = asyncHandler(
+  async (req: ApiKeyRequest & Request, res: Response, next: NextFunction) => {
+    const apiKey = req.headers[Headers.API_KEY];
 
-export const apiKey = async (
-  req: CustomRequest,
-  res: Response,
-  next: NextFunction
-) => {
-  const apiKey = req.headers[Headers.API_KEY];
+    const forbiddenError = new ForbiddenError(
+      "You do not have permission to access this resource"
+    );
+    if (!apiKey || Array.isArray(apiKey)) throw forbiddenError;
 
-  const forbiddenError = new ForbiddenError(
-    "You do not have permission to access this resource"
-  );
-  if (!apiKey || Array.isArray(apiKey)) return next(forbiddenError);
+    const apiKeyDocument = await apiKeyService.findApiKeyByKey(apiKey);
+    if (!apiKeyDocument) throw forbiddenError;
 
-  const apiKeyDocument = await apiKeyService.findApiKeyByKey(apiKey);
-  if (!apiKeyDocument) return next(forbiddenError);
-
-  req.apiKey = apiKeyDocument;
-  next();
-};
+    req.apiKey = apiKeyDocument;
+    next();
+  }
+);
 
 export const authentication = asyncHandler(
-  async (req: CustomRequest, res: Response, next: NextFunction) => {
+  async (
+    req: AuthenticationRequest & Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     /**
      * 1 - Check userId, accessToken headers
      * 2 - Find key token by userId to get publicKey to decode the access token
@@ -62,7 +51,8 @@ export const authentication = asyncHandler(
       throw new UnauthorizedError("Error: Invalid Request");
 
     const keyToken = await keyTokenService.findKeyTokenByUserId(userId);
-    if (!keyToken) throw new NotFoundError("Error: Not found user");
+    if (!keyToken || !keyToken.publicKey || !keyToken.refreshToken)
+      throw new UnauthorizedError("Error: You are not logged in!");
 
     const decodedToken = verifyToken(
       accessToken.replace("Bearer ", ""),
@@ -76,7 +66,6 @@ export const authentication = asyncHandler(
       decodedToken.email,
       decodedToken.id
     );
-    console.log({ user });
 
     if (!user) throw new UnauthorizedError("Error: The token is invalid");
 

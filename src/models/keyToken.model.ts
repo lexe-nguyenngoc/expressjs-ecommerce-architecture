@@ -11,9 +11,9 @@ export interface KeyToken extends Document {
 const keyTokenSchema = new Schema<KeyToken>(
   {
     user: { type: Schema.Types.ObjectId, ref: userRef, required: true },
-    publicKey: { type: String, required: true },
+    publicKey: { type: String },
     refreshTokensUsed: { type: [String], default: [] },
-    refreshToken: { type: String, required: true },
+    refreshToken: { type: String },
   },
   { timestamps: true }
 );
