@@ -6,7 +6,7 @@ import { TokenPayload, asyncHandler, verifyToken } from "@/utils";
 
 import apiKeyService from "@/services/apiKey.service";
 import keyTokenService from "@/services/keyToken.service";
-import shopService from "@/services/shop.service";
+import userService from "@/services/user.service";
 
 export const apiKey = asyncHandler(
   async (req: Request, res: Response, next: NextFunction) => {
@@ -63,7 +63,7 @@ export const authentication = asyncHandler(
     if (userId !== decodedPayload.id)
       throw new UnauthorizedError("Error: The token is invalid");
 
-    const user = await shopService.findShopByEmailId(
+    const user = await userService.findUserByEmailId(
       decodedPayload.email,
       decodedPayload.id
     );

@@ -1,8 +1,8 @@
 import { Document, Schema, Types, model } from "mongoose";
-import { Shop, DOCUMENT_NAME as userRef } from "./shop.model";
+import { User, DOCUMENT_NAME as userRef } from "./user.model";
 
 export interface KeyToken extends Document {
-  user: Types.ObjectId | Shop;
+  user: Types.ObjectId | User;
   publicKey: string;
   refreshTokensUsed: string[];
   refreshToken: string;

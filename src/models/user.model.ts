@@ -1,33 +1,33 @@
 import { Document, Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
 
-enum ShopStatus {
+enum UserStatus {
   ACTIVE = "active",
   INACTIVE = "inactive",
 }
 
-export const DOCUMENT_NAME = "Shop";
+export const DOCUMENT_NAME = "User";
 
-export interface Shop extends Document {
+export interface User extends Document {
   name: string;
   email: string;
   password: string;
-  status: ShopStatus;
+  status: UserStatus;
   verify: boolean;
   roles: string[];
 
   comparePassword(candidatePassword: string): boolean;
 }
 
-const shopSchema = new Schema<Shop>(
+const userSchema = new Schema<User>(
   {
     name: { type: String, trim: true, maxLength: 150 },
     email: { type: String, unique: true, trim: true },
     password: { type: String, required: true },
     status: {
       type: String,
-      enum: Object.values(ShopStatus),
-      default: ShopStatus.ACTIVE,
+      enum: Object.values(UserStatus),
+      default: UserStatus.ACTIVE,
     },
     verify: { type: Boolean, default: false },
     roles: { type: [String], default: [] },
@@ -35,7 +35,7 @@ const shopSchema = new Schema<Shop>(
   { timestamps: true }
 );
 
-shopSchema.pre("save", async function (next) {
+userSchema.pre("save", async function (next) {
   if (this.isNew) {
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(this.password, salt);
@@ -45,5 +45,5 @@ shopSchema.pre("save", async function (next) {
   next();
 });
 
-const ShopModel = model<Shop>(DOCUMENT_NAME, shopSchema);
-export default ShopModel;
+const UserModel = model<User>(DOCUMENT_NAME, userSchema);
+export default UserModel;
