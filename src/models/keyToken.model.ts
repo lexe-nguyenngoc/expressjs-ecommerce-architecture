@@ -17,5 +17,5 @@ const keyTokenSchema = new Schema<KeyToken>(
   },
   { timestamps: true }
 );
-const KeyTokenModel = model("KeyToken", keyTokenSchema);
+const KeyTokenModel = model<KeyToken>("KeyToken", keyTokenSchema);
 export default KeyTokenModel;

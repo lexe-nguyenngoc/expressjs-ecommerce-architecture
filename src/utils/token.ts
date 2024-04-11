@@ -1,7 +1,12 @@
 import JWT from "jsonwebtoken";
 
+export interface TokenPayload {
+  id: string;
+  email: string;
+}
+
 export const signToken = (
-  payload: any,
+  payload: TokenPayload,
   secret: string,
   expiresIn: string = "2 days"
 ): string => {
@@ -15,7 +20,7 @@ export const signToken = (
 
 export const signTokenPair = (
   ...dataKeys: {
-    payload: any;
+    payload: TokenPayload;
     secret: string;
     expiresIn?: string;
   }[]
@@ -26,3 +31,6 @@ export const signTokenPair = (
 
   return tokens;
 };
+
+export const verifyToken = (token: string, secret: string) =>
+  JWT.verify(token, secret) as TokenPayload;

@@ -5,12 +5,12 @@ import {
 } from "@/core/error.response";
 import {
   createNewShop,
-  findShopByEmail,
+  findShopByFilter,
 } from "@/models/repositories/shop.repo";
 
 class ShopService {
   createShop = async (name: string, email: string, password: string) => {
-    const existingShop = await findShopByEmail(email);
+    const existingShop = await findShopByFilter({ email }).lean();
     if (existingShop) {
       throw new BadRequestError("Error: Shop already exists!");
     }
@@ -25,7 +25,7 @@ class ShopService {
   };
 
   findShopWithEmailPassword = async (email: string, password: string) => {
-    const existingShop = await findShopByEmail(email);
+    const existingShop = await findShopByFilter({ email }).lean();
     if (!existingShop)
       throw new NotFoundError(
         `Error: Could not find any users with email: ${email}`
@@ -35,6 +35,11 @@ class ShopService {
       throw new UnauthorizedError("Error: Email or password is incorrect");
 
     return existingShop;
+  };
+
+  findShopByEmailId = async (email: string, _id: string) => {
+    const shopFound = await findShopByFilter({ _id, email }).lean();
+    return shopFound;
   };
 }
 

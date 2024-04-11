@@ -24,6 +24,10 @@ class KeyTokenService {
     });
     return newKeyToken;
   };
+
+  findKeyTokenByUserId = async (userId: string) => {
+    return await KeyTokenModel.findOne({ user: userId });
+  };
 }
 
 export default new KeyTokenService();

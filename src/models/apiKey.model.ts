@@ -1,7 +1,8 @@
-import { Schema, model } from "mongoose";
+import { Document, Schema, model } from "mongoose";
+
 import { ApiKeyPermission } from "@/constants";
 
-interface ApiKey {
+export interface ApiKey extends Document {
   key: string;
   status: boolean;
   permissions: ApiKeyPermission[];

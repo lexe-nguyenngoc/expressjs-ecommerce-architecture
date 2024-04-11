@@ -3,7 +3,12 @@ import { NextFunction, Request, Response } from "express";
 import { OK } from "@/core/success.response";
 import keyTokenService from "@/services/keyToken.service";
 import shopService from "@/services/shop.service";
-import { generateRSAKeyPair, pickFields, signTokenPair } from "@/utils";
+import {
+  TokenPayload,
+  generateRSAKeyPair,
+  pickFields,
+  signTokenPair,
+} from "@/utils";
 
 interface SignUpRequestBody {
   name: string;
@@ -61,9 +66,17 @@ class AuthController {
     ).send(res);
   };
 
+  logout = async (
+    req: Request<{}, {}, SignUpRequestBody>,
+    res: Response,
+    next: NextFunction
+  ) => {
+    res.send("Logout success");
+  };
+
   private generateToken = async (id: string, email: string) => {
     const { privateKey, publicKey } = generateRSAKeyPair();
-    const tokenPayload = {
+    const tokenPayload: TokenPayload = {
       id,
       email,
     };
