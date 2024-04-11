@@ -14,6 +14,12 @@ class ApiKeyService {
     });
     return newApiKey;
   };
+
+  findApiKeyByKey = async (key: string) => {
+    const apiKeyFound = await ApiKeyModel.findOne({ key, status: true }).lean();
+
+    return apiKeyFound;
+  };
 }
 
 export default new ApiKeyService();
