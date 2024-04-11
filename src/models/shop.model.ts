@@ -15,6 +15,8 @@ export interface Shop extends Document {
   status: ShopStatus;
   verify: boolean;
   roles: string[];
+
+  comparePassword(candidatePassword: string): boolean;
 }
 
 const shopSchema = new Schema<Shop>(
@@ -43,5 +45,12 @@ shopSchema.pre("save", async function (next) {
   next();
 });
 
-const ShopModel = model(DOCUMENT_NAME, shopSchema);
+shopSchema.methods.comparePassword = function comparePassword(
+  candidatePassword: string
+): boolean {
+  console.log(candidatePassword, this.password);
+  return bcrypt.compareSync(candidatePassword, this.password);
+};
+
+const ShopModel = model<Shop>(DOCUMENT_NAME, shopSchema);
 export default ShopModel;

@@ -1,4 +1,8 @@
-import { BadRequestError } from "@/core/error.response";
+import {
+  BadRequestError,
+  NotFoundError,
+  UnauthorizedError,
+} from "@/core/error.response";
 import {
   createNewShop,
   findShopByEmail,
@@ -18,6 +22,19 @@ class ShopService {
     });
 
     return newShop;
+  };
+
+  findShopWithEmailPassword = async (email: string, password: string) => {
+    const existingShop = await findShopByEmail(email);
+    if (!existingShop)
+      throw new NotFoundError(
+        `Error: Could not find any users with email: ${email}`
+      );
+
+    if (!existingShop.comparePassword(password))
+      throw new UnauthorizedError("Error: Email or password is incorrect");
+
+    return existingShop;
   };
 }
 
