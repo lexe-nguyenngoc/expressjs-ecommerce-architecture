@@ -7,13 +7,16 @@ interface ApiKey {
   permissions: ApiKeyPermission[];
 }
 
-const apiKeySchema = new Schema<ApiKey>({
-  key: { type: String, required: true, unique: true },
-  status: { type: Boolean, default: true },
-  permissions: [
-    { type: String, required: true, enum: Object.values(ApiKeyPermission) },
-  ],
-});
+const apiKeySchema = new Schema<ApiKey>(
+  {
+    key: { type: String, required: true, unique: true },
+    status: { type: Boolean, default: true },
+    permissions: [
+      { type: String, required: true, enum: Object.values(ApiKeyPermission) },
+    ],
+  },
+  { timestamps: true }
+);
 
 const ApiKeyModel = model<ApiKey>("ApiKey", apiKeySchema);
 export default ApiKeyModel;
