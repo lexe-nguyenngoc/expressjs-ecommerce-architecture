@@ -15,7 +15,7 @@ const keyTokenSchema = new Schema<KeyToken>(
     refreshTokensUsed: { type: [String], default: [] },
     refreshToken: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true, collection: "key_tokens" }
 );
 const KeyTokenModel = model<KeyToken>("KeyToken", keyTokenSchema);
 export default KeyTokenModel;

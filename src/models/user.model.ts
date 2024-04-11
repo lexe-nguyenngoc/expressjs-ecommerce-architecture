@@ -32,7 +32,7 @@ const userSchema = new Schema<User>(
     verify: { type: Boolean, default: false },
     roles: { type: [String], default: [] },
   },
-  { timestamps: true }
+  { timestamps: true, collection: "users" }
 );
 
 userSchema.pre("save", async function (next) {

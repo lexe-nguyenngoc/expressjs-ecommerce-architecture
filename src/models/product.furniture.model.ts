@@ -16,7 +16,7 @@ const furnitureSchema = new Schema<FurnitureDocument>(
     material: String,
     user: { type: Schema.Types.ObjectId, ref: userRef, required: true },
   },
-  { timestamps: true }
+  { timestamps: true, collection: "product_furniture" }
 );
 
 const ProductFurnitureModel = model<FurnitureDocument>(

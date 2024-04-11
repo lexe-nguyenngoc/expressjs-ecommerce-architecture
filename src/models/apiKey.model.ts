@@ -16,7 +16,7 @@ const apiKeySchema = new Schema<ApiKey>(
       { type: String, required: true, enum: Object.values(ApiKeyPermission) },
     ],
   },
-  { timestamps: true }
+  { timestamps: true, collection: "api_keys" }
 );
 
 const ApiKeyModel = model<ApiKey>("ApiKey", apiKeySchema);

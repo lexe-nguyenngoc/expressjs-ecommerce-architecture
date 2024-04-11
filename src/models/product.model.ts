@@ -54,7 +54,7 @@ const productSchema = new Schema<ProductDocument>(
       enum: Object.values(ProductStatus),
     },
   },
-  { timestamps: true }
+  { timestamps: true, collection: "products" }
 );
 // Create index
 productSchema.index({ name: "text", description: "text" });

@@ -16,7 +16,7 @@ const electronicsSchema = new Schema<ElectronicsDocument>(
     color: String,
     user: { type: Schema.Types.ObjectId, ref: userRef, required: true },
   },
-  { timestamps: true }
+  { timestamps: true, collection: "product_electronics" }
 );
 
 const ProductElectronicsModel = model<ElectronicsDocument>(
