@@ -16,6 +16,9 @@ export interface IUser {
   status: UserStatus;
   verify: boolean;
   roles: string[];
+
+  createdAt: NativeDate;
+  updatedAt: NativeDate;
 }
 
 interface UserMethods {

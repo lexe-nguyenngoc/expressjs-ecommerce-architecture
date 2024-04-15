@@ -10,14 +10,16 @@ class ApiKeyService {
     const newApiKey = await ApiKeyModel.create({
       key,
       status,
-      permissions,
+      permissions
     });
     return newApiKey;
   };
 
   findApiKeyByKey = async (key: string) => {
-    const apiKeyFound = await ApiKeyModel.findOne({ key, status: true }).lean();
-
+    const apiKeyFound = await ApiKeyModel.findOne({
+      key,
+      status: true
+    }).lean();
     return apiKeyFound;
   };
 }
