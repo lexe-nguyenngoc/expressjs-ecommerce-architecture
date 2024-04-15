@@ -11,7 +11,9 @@ class KeyTokenService {
   ) => {
     const existingKeyToken = await KeyTokenModel.findOne({ user: userId });
     if (existingKeyToken) {
-      existingKeyToken.refreshTokensUsed.push(existingKeyToken.refreshToken);
+      if (existingKeyToken.refreshToken) {
+        existingKeyToken.refreshTokensUsed.push(existingKeyToken.refreshToken);
+      }
       existingKeyToken.publicKey = publicKey;
       existingKeyToken.refreshToken = refreshToken;
 
@@ -22,7 +24,7 @@ class KeyTokenService {
     const newKeyToken = await KeyTokenModel.create({
       user: userId,
       publicKey,
-      refreshToken,
+      refreshToken
     });
     return newKeyToken;
   };
