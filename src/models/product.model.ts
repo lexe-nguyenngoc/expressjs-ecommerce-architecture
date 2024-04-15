@@ -1,4 +1,4 @@
-import { Document, Schema, Types, model } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 import slugify from "slugify";
 import uniqueSlug from "unique-slug";
 
@@ -15,7 +15,7 @@ export enum ProductStatus {
   PUBLISHED = "published"
 }
 
-export interface ProductDocument extends Document {
+export interface IProduct {
   name: string;
   thumb: string;
   description: string;
@@ -27,9 +27,12 @@ export interface ProductDocument extends Document {
   rating_average: number;
   variations: any;
   status: ProductStatus;
+
+  createdAt: NativeDate;
+  updatedAt: NativeDate;
 }
 
-const productSchema = new Schema<ProductDocument>(
+const productSchema = new Schema<IProduct>(
   {
     name: { type: String, required: true },
     thumb: { type: String, required: true },
@@ -70,5 +73,5 @@ productSchema.pre("save", function (next) {
   next();
 });
 
-const ProductModel = model<ProductDocument>("Product", productSchema);
+const ProductModel = model<IProduct>("Product", productSchema);
 export default ProductModel;

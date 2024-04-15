@@ -6,7 +6,7 @@ import ProductClothingModel from "@/models/product.clothing.model";
 import ProductElectronicsModel from "@/models/product.electronics.model";
 import ProductFurnitureModel from "@/models/product.furniture.model";
 import ProductModel, {
-  ProductDocument,
+  IProduct,
   ProductStatus,
   ProductTypes
 } from "@/models/product.model";
@@ -37,7 +37,7 @@ class Product {
     rating_average,
     variations,
     status
-  }: ProductDocument) {
+  }: IProduct) {
     this.name = name;
     this.thumb = thumb;
     this.description = description;
@@ -51,7 +51,7 @@ class Product {
     this.status = status;
   }
 
-  async createProduct(_id: string): Promise<ProductDocument> {
+  async createProduct(_id: string): Promise<IProduct> {
     const newProduct = await ProductModel.create({ ...this, _id });
     return newProduct;
   }
@@ -93,7 +93,7 @@ const CLASSES_REGISTERED = {
 };
 
 class ProductFactory {
-  static async createProduct(payload: ProductDocument) {
+  static async createProduct(payload: IProduct) {
     const ProductClass = CLASSES_REGISTERED[payload.type];
     if (!ProductClass)
       throw new BadRequestError("Error: Type of product is invalid!");

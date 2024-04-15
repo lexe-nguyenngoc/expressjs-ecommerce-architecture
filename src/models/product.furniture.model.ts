@@ -2,14 +2,17 @@ import { Schema, Types, model } from "mongoose";
 
 import { IUser, DOCUMENT_NAME as userRef } from "./user.model";
 
-interface FurnitureDocument extends Document {
+interface IFurnitureProduct {
   brand: string;
   size: string;
   material: string;
   user: Types.ObjectId | IUser;
+
+  createdAt: NativeDate;
+  updatedAt: NativeDate;
 }
 
-const furnitureSchema = new Schema<FurnitureDocument>(
+const furnitureSchema = new Schema<IFurnitureProduct>(
   {
     brand: { type: String, required: true },
     size: String,
@@ -19,7 +22,7 @@ const furnitureSchema = new Schema<FurnitureDocument>(
   { timestamps: true, collection: "product_furniture" }
 );
 
-const ProductFurnitureModel = model<FurnitureDocument>(
+const ProductFurnitureModel = model<IFurnitureProduct>(
   "ProductFurniture",
   furnitureSchema
 );
