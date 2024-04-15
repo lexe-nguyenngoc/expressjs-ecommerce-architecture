@@ -1,25 +1,27 @@
 import { FilterQuery } from "mongoose";
 
-import { SelectFields } from "@/@types/generic";
-import UserModel, { User } from "@/models/user.model";
+import User, { IUser } from "@/models/user.model";
+import { SelectFields } from "@/types";
 
-const defaultSelect: SelectFields<User> = {
+const defaultSelect: SelectFields<IUser> = {
   email: 1,
   password: 1,
   status: 1,
   roles: 1,
-  name: 1,
+  name: 1
 };
 
-export const createNewUser = async (payload: Partial<User>): Promise<User> => {
-  return await UserModel.create(payload);
+export const createNewUser = async (
+  payload: Partial<IUser>
+): Promise<IUser> => {
+  return await User.create(payload);
 };
 
 export const findUserByFilter = (
-  filter: FilterQuery<User> | undefined,
+  filter: FilterQuery<IUser> | undefined,
   select = defaultSelect
 ) => {
-  return UserModel.findOne(filter).select(select);
+  return User.findOne(filter).select(select);
 };
 
 const userRepo = { createNewUser, findUserByFilter };

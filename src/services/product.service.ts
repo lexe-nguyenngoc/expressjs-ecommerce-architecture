@@ -8,9 +8,9 @@ import ProductFurnitureModel from "@/models/product.furniture.model";
 import ProductModel, {
   ProductDocument,
   ProductStatus,
-  ProductTypes,
+  ProductTypes
 } from "@/models/product.model";
-import { User } from "@/models/user.model";
+import { IUser } from "@/models/user.model";
 
 class Product {
   name: string;
@@ -19,7 +19,7 @@ class Product {
   slug: string;
   quantity: number;
   type: ProductTypes;
-  user: Types.ObjectId | User;
+  user: Types.ObjectId | IUser;
   attributes: any;
   rating_average: number;
   variations: any;
@@ -36,7 +36,7 @@ class Product {
     attributes,
     rating_average,
     variations,
-    status,
+    status
   }: ProductDocument) {
     this.name = name;
     this.thumb = thumb;
@@ -89,7 +89,7 @@ class Furniture extends Product {
 const CLASSES_REGISTERED = {
   [ProductTypes.CLOTHING]: Clothing,
   [ProductTypes.ELECTRONICS]: Electronics,
-  [ProductTypes.FURNITURE]: Furniture,
+  [ProductTypes.FURNITURE]: Furniture
 };
 
 class ProductFactory {

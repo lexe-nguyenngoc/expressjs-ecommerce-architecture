@@ -1,13 +1,11 @@
-import bcrypt from "bcrypt";
-
 import {
   BadRequestError,
   NotFoundError,
-  UnauthorizedError,
+  UnauthorizedError
 } from "@/core/error.response";
 import {
   createNewUser,
-  findUserByFilter,
+  findUserByFilter
 } from "@/models/repositories/user.repo";
 
 class UserService {
@@ -20,20 +18,19 @@ class UserService {
     const newUser = await createNewUser({
       name,
       email,
-      password,
+      password
     });
 
     return newUser;
   };
 
   findUserByEmailPassword = async (email: string, password: string) => {
-    const existingUser = await findUserByFilter({ email }).lean();
+    const existingUser = await findUserByFilter({ email });
     if (!existingUser)
       throw new NotFoundError(
         `Error: Could not find any users with email: ${email}`
       );
-
-    if (!bcrypt.compareSync(password, existingUser.password))
+    if (!existingUser.comparePassword(password))
       throw new UnauthorizedError("Error: Email or password is incorrect");
 
     return existingUser;

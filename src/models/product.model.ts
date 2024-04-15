@@ -2,17 +2,17 @@ import { Document, Schema, Types, model } from "mongoose";
 import slugify from "slugify";
 import uniqueSlug from "unique-slug";
 
-import { User, DOCUMENT_NAME as userRef } from "./user.model";
+import { IUser, DOCUMENT_NAME as userRef } from "./user.model";
 
 export enum ProductTypes {
   ELECTRONICS = "Electronics",
   CLOTHING = "Clothing",
-  FURNITURE = "Furniture",
+  FURNITURE = "Furniture"
 }
 
 export enum ProductStatus {
   DRAFT = "draft",
-  PUBLISHED = "published",
+  PUBLISHED = "published"
 }
 
 export interface ProductDocument extends Document {
@@ -22,7 +22,7 @@ export interface ProductDocument extends Document {
   slug: string;
   quantity: number;
   type: ProductTypes;
-  user: Types.ObjectId | User;
+  user: Types.ObjectId | IUser;
   attributes: any;
   rating_average: number;
   variations: any;
@@ -45,14 +45,14 @@ const productSchema = new Schema<ProductDocument>(
       default: 4.5,
       min: [1, "The lowest rating must be 1.0"],
       max: [5, "The highest rating must be 5.0"],
-      set: (value: number) => Math.round(value * 10) / 10,
+      set: (value: number) => Math.round(value * 10) / 10
     },
     variations: { type: Array, required: true },
     status: {
       type: String,
       required: true,
-      enum: Object.values(ProductStatus),
-    },
+      enum: Object.values(ProductStatus)
+    }
   },
   { timestamps: true, collection: "products" }
 );
@@ -65,7 +65,7 @@ productSchema.pre("save", function (next) {
     slugify(this.name, {
       lower: true,
       trim: true,
-      remove: /[*+~.()'"!:@]/g,
+      remove: /[*+~.()'"!:@]/g
     }) + uniqueSlug(this.name);
   next();
 });

@@ -1,25 +1,30 @@
-import { Document, Schema, model } from "mongoose";
+import { Model, Schema, model } from "mongoose";
 import bcrypt from "bcrypt";
+
+export const DOCUMENT_NAME = "user";
+const COLLECTION_NAME = "users";
 
 enum UserStatus {
   ACTIVE = "active",
-  INACTIVE = "inactive",
+  INACTIVE = "inactive"
 }
 
-export const DOCUMENT_NAME = "User";
-
-export interface User extends Document {
+export interface IUser {
   name: string;
   email: string;
   password: string;
   status: UserStatus;
   verify: boolean;
   roles: string[];
+}
 
+interface UserMethods {
   comparePassword(candidatePassword: string): boolean;
 }
 
-const userSchema = new Schema<User>(
+export type UserModel = Model<IUser, {}, UserMethods>;
+
+const userSchema = new Schema<IUser, UserModel, UserMethods>(
   {
     name: { type: String, trim: true, maxLength: 150 },
     email: { type: String, unique: true, trim: true },
@@ -27,12 +32,12 @@ const userSchema = new Schema<User>(
     status: {
       type: String,
       enum: Object.values(UserStatus),
-      default: UserStatus.ACTIVE,
+      default: UserStatus.ACTIVE
     },
     verify: { type: Boolean, default: false },
-    roles: { type: [String], default: [] },
+    roles: { type: [String], default: [] }
   },
-  { timestamps: true, collection: "users" }
+  { timestamps: true, collection: COLLECTION_NAME }
 );
 
 userSchema.pre("save", async function (next) {
@@ -45,5 +50,9 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
-const UserModel = model<User>(DOCUMENT_NAME, userSchema);
-export default UserModel;
+userSchema.method("comparePassword", function (candidatePassword: string) {
+  return bcrypt.compareSync(candidatePassword, this.password);
+});
+
+const User = model<IUser, UserModel>(DOCUMENT_NAME, userSchema);
+export default User;
